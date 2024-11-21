@@ -2,7 +2,7 @@ import './Filter.css';
 
 function Filter() {
   return (
-    <div classname="app-block filter">
+    <div className="app-block filter">
       <h2>Filters</h2>
     </div>
   );

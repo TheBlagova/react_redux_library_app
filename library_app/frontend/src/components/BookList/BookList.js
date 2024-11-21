@@ -2,7 +2,7 @@ import './BookList.css';
 
 function BookList() {
   return (
-    <div classname="app-block book-list">
+    <div className="app-block book-list">
       <h2>Book list</h2>
     </div>
   );
