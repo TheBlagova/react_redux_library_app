@@ -12,9 +12,9 @@ function BookList() {
       ) : (
         <ul>
           {books.map((book, i) => (
-            <li key={i}>
+            <li key={book.id}>
               <div className="book-info">
-                {book.title} by <strong>{book.author}</strong>
+                {++i}. {book.title} by <strong>{book.author}</strong>
               </div>
             </li>
           ))}
