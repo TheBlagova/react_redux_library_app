@@ -8,6 +8,12 @@ const booksReducer = (state = initialState, action) => {
       return [...state, action.payLoad];
     case actionTypes.DELETE_BOOK:
       return state.filter((book) => book.id !== action.payLoad);
+    case actionTypes.TOGGLE_FAVORITE:
+      return state.map((book) =>
+        book.id === action.payLoad
+          ? { ...book, isFavorite: !book.isFavorite }
+          : book
+      );
     default:
       return state;
   }

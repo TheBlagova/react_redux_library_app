@@ -13,3 +13,10 @@ export const deleteBook = (id) => {
     payLoad: id,
   };
 };
+
+export const toggleFavorite = (id) => {
+  return {
+    type: actionTypes.TOGGLE_FAVORITE,
+    payLoad: id,
+  };
+};
