@@ -5,7 +5,7 @@ import filterReducer from './slices/filterSlice';
 const store = configureStore({
   reducer: {
     books: booksReducer,
-    filters: filterReducer,
+    filter: filterReducer,
   },
 });
 
