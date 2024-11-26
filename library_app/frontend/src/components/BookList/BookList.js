@@ -4,6 +4,7 @@ import { deleteBook, toggleFavorite } from '../../redux/books/actionCreators';
 import {
   selectTitleFilter,
   selectAuthorFilter,
+  selectOnlyFavoriteFilter,
 } from '../../redux/slices/filterSlice';
 import './BookList.css';
 
@@ -11,6 +12,7 @@ function BookList() {
   const books = useSelector((state) => state.books);
   const titleFilter = useSelector(selectTitleFilter);
   const authorFilter = useSelector(selectAuthorFilter);
+  const onlyFavoriteFilter = useSelector(selectOnlyFavoriteFilter);
   const dispatch = useDispatch();
 
   const handleDeleteBook = (id) => {
@@ -28,8 +30,16 @@ function BookList() {
     const matchesAuthor = book.author
       .toLowerCase()
       .includes(authorFilter.toLowerCase());
-    return matchesTitle && matchesAuthor;
+    const matchesFavorite = onlyFavoriteFilter ? book.isFavorite : true;
+    return matchesTitle && matchesAuthor && matchesFavorite;
   });
+
+  const hightLightMatch = (text, filter) => {
+    if (!filter) return text;
+
+    const regex = new RegExp(`(${filter})`, 'gi');
+    return text.split(regex);
+  };
 
   return (
     <div className="app-block book-list">
@@ -41,7 +51,8 @@ function BookList() {
           {filteredBooks.map((book, i) => (
             <li key={book.id}>
               <div className="book-info">
-                {++i}. {book.title} by <strong>{book.author}</strong>
+                {++i}. {hightLightMatch(book.title, titleFilter)} by{' '}
+                <strong>{hightLightMatch(book.author, authorFilter)}</strong>
               </div>
               <div className="book-actions">
                 <span onClick={() => handleToggleFavorite(book.id)}>
