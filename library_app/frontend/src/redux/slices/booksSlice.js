@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import createBookWithId from '../../utils/createBookWithId';
 import { setError } from './errorSlice';
 
@@ -16,7 +16,7 @@ export const fetchBook = createAsyncThunk(
       return res.data;
     } catch (error) {
       thunkAPI.dispatch(setError(error.message));
-      throw error;
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -31,11 +31,11 @@ const booksSlice = createSlice({
     deleteBook: (state, action) => {
       return {
         ...state,
-        books: state.books.filter((book) => book.id !== action.payLoad),
+        books: state.books.filter((book) => book.id !== action.payload),
       };
     },
     toggleFavorite: (state, action) => {
-      return state.books.forEach((book) => {
+      state.books.forEach((book) => {
         if (book.id === action.payload) {
           book.isFavorite = !book.isFavorite;
         }
@@ -44,17 +44,17 @@ const booksSlice = createSlice({
   },
   // OPTION 1
   extraReducers: {
-    [fetchBook.fulfilled]: (state) => {
+    [fetchBook.pending]: (state) => {
       state.isLoadingViaAPI = true;
     },
     [fetchBook.fulfilled]: (state, action) => {
       state.isLoadingViaAPI = false;
-      if (action.payload.title && action.payload.author) {
+      if (action?.payload?.title && action?.payload?.author) {
         state.books.push(createBookWithId(action.payload, 'API'));
       }
     },
-    [fetchBook.fulfilled]: (state) => {
-      state.isLoadingViaAPI = true;
+    [fetchBook.rejected]: (state) => {
+      state.isLoadingViaAPI = false;
     },
   },
   // OPTION 2

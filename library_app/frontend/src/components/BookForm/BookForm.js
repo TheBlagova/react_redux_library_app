@@ -15,29 +15,29 @@ function BookForm() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const isLoadingViaAPI = useSelector(selectIsLoadingViaAPI);
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
 
   const handleAddRandomBook = () => {
     const randomIndex = Math.floor(Math.random() * booksData.length);
     const randomBook = booksData[randomIndex];
-    dispath(addBook(createBookWithId(randomBook, 'random')));
+    dispatch(addBook(createBookWithId(randomBook, 'random')));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (title && author) {
-      dispath(addBook(createBookWithId({ title, author }, 'manual')));
+      dispatch(addBook(createBookWithId({ title, author }, 'manual')));
 
       setTitle('');
       setAuthor('');
     } else {
-      dispath(setError('You must fill title and author'));
+      dispatch(setError('You must fill title and author'));
     }
   };
 
   const handleAddRandomBookViaAPI = () => {
-    dispath(fetchBook('http://localhost:4000/random-book-delayed'));
+    dispatch(fetchBook('http://localhost:4000/random-book-delayed'));
   };
 
   return (
