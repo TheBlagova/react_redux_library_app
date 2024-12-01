@@ -3,7 +3,10 @@ import axios from 'axios';
 import createBookWithId from '../../utils/createBookWithId';
 import { setError } from './errorSlice';
 
-const initialState = [];
+const initialState = {
+  books: [],
+  isLoadingViaAPI: false,
+};
 
 export const fetchBook = createAsyncThunk(
   'books/fetchBook',
@@ -23,13 +26,16 @@ const booksSlice = createSlice({
   initialState,
   reducers: {
     addBook: (state, action) => {
-      state.push(action.payload);
+      state.books.push(action.payload);
     },
     deleteBook: (state, action) => {
-      state.filter((book) => book.id !== action.payLoad);
+      return {
+        ...state,
+        books: state.books.filter((book) => book.id !== action.payLoad),
+      };
     },
     toggleFavorite: (state, action) => {
-      return state.forEach((book) => {
+      return state.books.forEach((book) => {
         if (book.id === action.payload) {
           book.isFavorite = !book.isFavorite;
         }
@@ -37,24 +43,34 @@ const booksSlice = createSlice({
     },
   },
   // OPTION 1
-  // extraReducers: {
-  //   [fetchBook.fulfilled]: (state, action) => {
-  //     if (action.payload.title && action.payload.author) {
-  //       state.push(createBookWithId(action.payload, 'API'));
-  //     }
-  //   },
-  // },
-  extraReducers: (builder) => {
-    builder.addCase(fetchBook.fulfilled, (state, action) => {
+  extraReducers: {
+    [fetchBook.fulfilled]: (state) => {
+      state.isLoadingViaAPI = true;
+    },
+    [fetchBook.fulfilled]: (state, action) => {
+      state.isLoadingViaAPI = false;
       if (action.payload.title && action.payload.author) {
-        state.push(createBookWithId(action.payload, 'API'));
+        state.books.push(createBookWithId(action.payload, 'API'));
       }
-    });
+    },
+    [fetchBook.fulfilled]: (state) => {
+      state.isLoadingViaAPI = true;
+    },
   },
+  // OPTION 2
+  // extraReducers: (builder) => {
+  //   builder.addCase(fetchBook.fulfilled, (state, action) => {
+  //     if (action.payload.title && action.payload.author) {
+  //       state.books.push(createBookWithId(action.payload, 'API'));
+  //     }
+  //   });
+  // },
 });
 
 export const { addBook, deleteBook, toggleFavorite } = booksSlice.actions;
 
-export const selectBooks = (state) => state.books;
+export const selectBooks = (state) => state.books.books;
+
+export const selectIsLoadingViaAPI = (state) => state.books.isLoadingViaAPI;
 
 export default booksSlice.reducer;
