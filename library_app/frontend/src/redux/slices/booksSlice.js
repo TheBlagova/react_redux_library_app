@@ -36,21 +36,21 @@ const booksSlice = createSlice({
       });
     },
   },
-  extraReducers: {
-    [fetchBook.fulfilled]: (state, action) => {
-      if (action.payload.title && action.payload.author) {
-        state.push(createBookWithId(action.payload, 'API'));
-      }
-    },
-  },
-
-  // extraReducers: (builder) => {
-  //   builder.addCase(fetchBook.fulfilled, (state, action) => {
+  // OPTION 1
+  // extraReducers: {
+  //   [fetchBook.fulfilled]: (state, action) => {
   //     if (action.payload.title && action.payload.author) {
   //       state.push(createBookWithId(action.payload, 'API'));
   //     }
-  //   });
+  //   },
   // },
+  extraReducers: (builder) => {
+    builder.addCase(fetchBook.fulfilled, (state, action) => {
+      if (action.payload.title && action.payload.author) {
+        state.push(createBookWithId(action.payload, 'API'));
+      }
+    });
+  },
 });
 
 export const { addBook, deleteBook, toggleFavorite } = booksSlice.actions;
